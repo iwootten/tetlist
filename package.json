@@ -16,10 +16,6 @@
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.5"
   },
-  "allowScripts": {
-    "esbuild": true,
-    "workerd": true
-  },
   "devDependencies": {
     "wrangler": "^4.138.0"
   }
