@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { byNewest, displayDuration, site, splitTitle } from "../data/sets";
+
+const sets = (await getCollection("sets")).sort(byNewest);
+---
+
+<Base title={site.documentTitle}>
+  <main>
+    <h1 class="nav">
+      <span aria-current="page">All</span>
+      <span class="meta">{site.tagline}</span>
+    </h1>
+    <ul class="sets">
+      {
+        sets.map((set) => {
+          const { detail } = splitTitle(set.data.title);
+          const count = set.data.tracks.length;
+          const tracks = `${count} ${count === 1 ? "track" : "tracks"}`;
+          const summary = set.data.duration
+            ? `${tracks}, ${displayDuration(set.data.duration)}`
+            : tracks;
+          return (
+            <li>
+              <a href={`/sets/${set.id}`}>
+                <span class="name">{detail || set.data.title}</span>
+                <span class="meta">{summary}</span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </main>
+</Base>

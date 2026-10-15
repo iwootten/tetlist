@@ -1,0 +1,17 @@
+{
+  "name": "tetlist",
+  "compatibility_date": "2026-09-25",
+  "assets": {
+    "directory": "./dist"
+  },
+  "routes": [
+    {
+      "pattern": "tetlist.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.tetlist.com",
+      "custom_domain": true
+    }
+  ]
+}

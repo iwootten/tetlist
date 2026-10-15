@@ -1,0 +1,104 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { displayTime, splitTitle, startSeconds, watchUrl, youtube } from "../../data/sets";
+
+export async function getStaticPaths() {
+  const sets = await getCollection("sets");
+  return sets.map((set) => ({
+    params: { slug: set.id },
+    props: { set },
+  }));
+}
+
+interface Props {
+  set: CollectionEntry<"sets">;
+}
+
+const { set } = Astro.props;
+const { detail } = splitTitle(set.data.title);
+const artist = set.data.artist;
+const subtitle = detail || set.data.title;
+const video = youtube(set.data.source);
+---
+
+<Base
+  title={`${set.data.title} Tracklist, video and download links`}
+  description={`Watch ${set.data.title} set, find the source tracks and download links`}
+>
+  <main>
+    <h1 class="nav">
+      <a href="/">All</a>
+      <span>{artist}</span>
+      {subtitle && subtitle !== artist && (
+        <a class="meta" href={`/sets/${set.id}`} aria-current="page">
+          {subtitle}
+        </a>
+      )}
+    </h1>
+    {
+      video && (
+        <div class="player">
+          <iframe
+            name="player"
+            src={`https://www.youtube.com/embed/${video.id}?enablejsapi=1`}
+            referrerpolicy="strict-origin-when-cross-origin"
+            title={set.data.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+      )
+    }
+    <table class="tracks">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Artist</th>
+          <th>Title</th>
+          <th>Bandcamp</th>
+          <th>Beatport</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          set.data.tracks.map((track) => {
+            const seconds = video ? startSeconds(track.time) : null;
+            return (
+              <tr>
+                <td>
+                  {seconds === null ? (
+                    displayTime(track.time)
+                  ) : (
+                    <a href={watchUrl(video!.id, seconds)} target="player">
+                      {displayTime(track.time)}
+                    </a>
+                  )}
+                </td>
+                <td>{track.artist}</td>
+                <td>{track.title}</td>
+                <td>
+                  {track.bandcamp && (
+                    <a class="buy bandcamp" href={track.bandcamp} target="_blank" rel="noopener">
+                      bc
+                    </a>
+                  )}
+                </td>
+                <td>
+                  {track.beatport && (
+                    <a class="buy beatport" href={track.beatport} target="_blank" rel="noopener">
+                      bp
+                    </a>
+                  )}
+                </td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+  </main>
+  <script>
+    import "../../scripts/player.js";
+  </script>
+</Base>

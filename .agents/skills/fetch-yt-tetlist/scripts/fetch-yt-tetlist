@@ -1,0 +1,220 @@
+#!/usr/bin/env node
+// fetch-yt-tetlist — build a tetlist data YAML from a YouTube DJ set.
+//
+// It uses yt-dlp (no API key needed) to pull the video title, description,
+// chapters and comments, picks the best/fullest tracklist comment, parses it
+// into tracks, and writes data/<slug>.yaml with title + source but NO
+// bandcamp/beatport links yet (those get filled in later by the resolver /
+// research step).
+//
+// Usage:
+//   node fetch-yt-tetlist.mjs <youtube-url> [--slug <slug>] [--title <title>] [--dry-run]
+//
+// Env:
+//   DATA_DIR          output dir (default: ./data)
+//   YT_MAX_COMMENTS   max comments to fetch (default: 200)
+
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
+
+function slugify(s) {
+  return String(s)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function yq(s) {
+  return '"' + String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+}
+
+function timeFromSeconds(sec) {
+  sec = Math.max(0, Math.floor(sec));
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return h ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` : `${m}:${String(s).padStart(2, '0')}`;
+}
+
+// Always H:MM:SS — used for the set's overall `duration` field.
+function durationFromSeconds(sec) {
+  if (sec == null || Number.isNaN(Number(sec))) return null;
+  sec = Math.max(0, Math.floor(Number(sec)));
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+// Parse a blob of text into tracks. Returns [{ time, artist, title }].
+export function parseTracklist(text) {
+  const out = [];
+  for (const raw of String(text).split('\n')) {
+    let line = raw
+      .replace(/\u00a0/g, ' ')
+      .replace(/\*\*/g, '')
+      .replace(/^\s*[-•*]\s+/, '')
+      .trim();
+    if (!line) continue;
+
+    // "w/ ..." layers become their own track, inheriting the parent's time
+    const w = line.match(/^w\/\s*(.+)$/i);
+    if (w) {
+      const rest = w[1].trim();
+      const sp = rest.match(/^(.*?)\s+[-–—]\s+(.*)$/);
+      const prev = out[out.length - 1];
+      out.push({
+        time: prev ? prev.time : null,
+        artist: sp ? sp[1].trim() : '',
+        title: sp ? sp[2].trim() : rest,
+      });
+      continue;
+    }
+
+    let time = null;
+    // leading timestamp, optionally bracketed/listed
+    const mt = line.match(/^\[?(\d{1,3}:\d{2}(?::\d{2})?)\]?\s*[-–—.):]?\s+(.*)$/);
+    if (mt) {
+      time = mt[1];
+      line = mt[2].trim();
+    }
+
+    // leading list number ("01 ", "01.", "01)", "01 -") — only when there's no timestamp,
+    // otherwise an artist like "33 Below" would lose its leading digits
+    if (!time) {
+      const mn = line.match(/^#?\s*(\d{1,3})\s*(?:[.)\]:]|-)?\s+(.*)$/);
+      if (mn) line = mn[2].trim();
+    }
+
+    if (!line) continue;
+
+    const sp = line.match(/^(.*?)\s+[-–—]\s+(.*)$/);
+    const artist = sp ? sp[1].trim() : '';
+    const title = sp ? sp[2].trim() : line;
+
+    // keep timed lines even without an explicit artist; otherwise require " - "
+    if (!time && !sp) continue;
+    out.push({ time, artist, title });
+  }
+  return out;
+}
+
+function scoreTracks(tracks, likes = 0) {
+  if (!tracks.length) return -1;
+  const timed = tracks.filter((t) => t.time).length;
+  const named = tracks.filter((t) => t.artist).length;
+  return tracks.length * 10 + timed * 15 + named * 3 + Math.min(likes, 2000) / 100;
+}
+
+function mergeTracks(primary, others) {
+  const alt = others.find((o) => o.tracks.length === primary.tracks.length);
+  if (!alt) return primary.tracks;
+  return primary.tracks.map((t, i) => {
+    const a = alt.tracks[i];
+    return { time: t.time || a.time, artist: t.artist || a.artist, title: t.title || a.title };
+  });
+}
+
+function candidatesFrom(info) {
+  const list = [];
+  const push = (text, likes, label) => {
+    const tracks = parseTracklist(text);
+    if (tracks.length >= 3) list.push({ tracks, likes, label });
+  };
+  if (info.description) push(info.description, 0, 'description');
+  if (Array.isArray(info.chapters) && info.chapters.length) {
+    const text = info.chapters
+      .map((c) => `${timeFromSeconds(c.start_time)} ${c.title || ''}`.trim())
+      .join('\n');
+    push(text, 0, 'chapters');
+  }
+  for (const c of info.comments || []) push(c.text || '', c.like_count || 0, `comment @${c.author || '?'}`);
+  return list;
+}
+
+function main() {
+  const args = process.argv.slice(2);
+  const url = args.find((a) => !a.startsWith('--'));
+  const opt = (name) => {
+    const i = args.indexOf('--' + name);
+    return i >= 0 ? args[i + 1] : undefined;
+  };
+  const dryRun = args.includes('--dry-run');
+  const dataDir = process.env.DATA_DIR || path.resolve(process.cwd(), 'data');
+  const maxComments = Number(process.env.YT_MAX_COMMENTS || 200);
+
+  if (!url) {
+    console.error('Usage: node fetch-yt-tetlist <youtube-url> [--slug <slug>] [--title <title>] [--dry-run]');
+    process.exit(1);
+  }
+
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'fetch-yt-'));
+  const base = path.join(tmp, 'v');
+  try {
+    execFileSync(
+      'yt-dlp',
+      [
+        '--skip-download', '--no-warnings', '--no-playlist',
+        '--write-info-json', '--write-comments',
+        '--extractor-args',
+        `youtube:comment_sort=top;max_comments=${maxComments},all,${maxComments},${maxComments}`,
+        '-o', base, url,
+      ],
+      { stdio: ['ignore', 'inherit', 'inherit'] }
+    );
+  } catch (e) {
+    console.error('yt-dlp failed. Is it installed and on PATH?');
+    process.exit(1);
+  }
+
+  const info = JSON.parse(fs.readFileSync(base + '.info.json', 'utf8'));
+  const videoTitle = info.title || 'Untitled set';
+  const videoUrl = info.webpage_url || url;
+
+  const candidates = candidatesFrom(info);
+  if (!candidates.length) {
+    console.error('No tracklist-like text found in description, chapters or comments.');
+    process.exit(1);
+  }
+  candidates.sort((a, b) => scoreTracks(b.tracks, b.likes) - scoreTracks(a.tracks, a.likes));
+  const best = candidates[0];
+  const bestTracks = mergeTracks(best, candidates.slice(1));
+
+  const title = opt('title') || videoTitle;
+  const slug = opt('slug') || slugify(title);
+
+  const yml = [];
+  yml.push('title: ' + yq(title));
+  yml.push('source: ' + yq(videoUrl));
+  const duration = durationFromSeconds(info.duration);
+  if (duration) yml.push('duration: ' + yq(duration));
+  yml.push('tracks:');
+  bestTracks.forEach((t, i) => {
+    yml.push('  - number: ' + (i + 1));
+    if (t.time) yml.push('    time: ' + yq(t.time));
+    yml.push('    artist: ' + yq(t.artist || ''));
+    yml.push('    title: ' + yq(t.title || ''));
+  });
+
+  console.error(
+    `\nPicked ${best.label} — ${bestTracks.length} tracks (${bestTracks.filter((t) => t.time).length} timed).`
+  );
+  console.error(`Title: ${title}`);
+  console.error(`Slug:  ${slug}\n`);
+
+  if (dryRun) {
+    process.stdout.write(yml.join('\n') + '\n');
+    return;
+  }
+
+  fs.mkdirSync(dataDir, { recursive: true });
+  const yamlPath = path.join(dataDir, slug + '.yaml');
+  fs.writeFileSync(yamlPath, yml.join('\n') + '\n');
+  console.log('Wrote ' + yamlPath);
+  console.log(`${bestTracks.length} tracks (${bestTracks.filter((t) => t.time).length} with timestamps), no bandcamp/beatport yet`);
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

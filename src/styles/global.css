@@ -1,0 +1,313 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&display=swap");
+
+:root {
+  color-scheme: dark;
+  --bg: #111;
+  --text: #e8e8e8;
+  --muted: #888;
+  --hover: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+main {
+  max-width: 40rem;
+  margin: 0;
+  padding: 1.5rem 1.5rem 6rem;
+}
+
+h1 {
+  margin: 0 0 1.75rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+h1.nav {
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+h1.nav a,
+h1 .meta {
+  font-weight: 400;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--hover);
+}
+
+a:focus-visible {
+  outline: 1px solid var(--muted);
+  outline-offset: 4px;
+}
+
+.meta {
+  color: var(--muted);
+}
+
+.nav {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 0 1.75rem;
+  min-width: 0;
+  color: var(--muted);
+}
+
+.nav > :last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav a {
+  color: var(--muted);
+}
+
+.nav a:hover,
+.nav span:not(.meta) {
+  color: var(--text);
+}
+
+.nav > * + *::before {
+  content: "/";
+  margin-right: 0.5rem;
+}
+
+
+.sets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sets li + li {
+  margin-top: 1.75rem;
+}
+
+.sets a {
+  display: block;
+}
+
+.sets .name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sets .meta {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.875rem;
+}
+
+.sets a:hover .meta,
+.sets a:hover .event {
+  color: #aaa;
+}
+
+.tracks {
+  margin: 2.5rem 0 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.player ~ .tracks {
+  width: calc(100vw - 3rem);
+  table-layout: fixed;
+}
+
+@media (min-width: 64rem) {
+  .player ~ .tracks {
+    width: 50vw;
+  }
+}
+
+.player ~ .tracks th:nth-child(1),
+.player ~ .tracks td:nth-child(1) {
+  width: 12%;
+}
+
+.player ~ .tracks th:nth-child(2),
+.player ~ .tracks td:nth-child(2) {
+  width: 34%;
+}
+
+.player ~ .tracks th:nth-child(3),
+.player ~ .tracks td:nth-child(3) {
+  width: 36%;
+}
+
+.player ~ .tracks th:nth-child(4),
+.player ~ .tracks td:nth-child(4),
+.player ~ .tracks th:nth-child(5),
+.player ~ .tracks td:nth-child(5) {
+  width: 9%;
+}
+
+.tracks tr.is-playing td {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tracks th,
+.tracks td {
+  padding: 0.4rem 1.75rem 0.4rem 0;
+  text-align: left;
+  font-weight: 400;
+  vertical-align: baseline;
+}
+
+.tracks th {
+  padding-bottom: 0.75rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.player-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  margin: 0.75rem 0 0;
+}
+
+.now-playing,
+.now-playing a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.now-playing {
+  margin: 0;
+  margin-right: auto;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.now-playing .meta {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.now-playing a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.now-playing[hidden] {
+  display: none;
+}
+
+.player-controls {
+  display: flex;
+  flex: none;
+  gap: 1.25rem;
+}
+
+.player-controls button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.player-controls button:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.player-controls button:disabled {
+  color: #444;
+  cursor: default;
+}
+
+.player-controls button:focus-visible {
+  outline: 1px solid var(--muted);
+  outline-offset: 4px;
+}
+
+.player {
+  margin: 0;
+  width: min(48rem, calc(100vw - 3rem));
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.player iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.tracks td:first-child,
+.tracks th:first-child {
+  padding-right: 1.25rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tracks a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.tracks a:hover {
+  color: var(--hover);
+}
+
+@media (max-width: 40rem) {
+  .tracks th,
+  .tracks td {
+    padding-right: 0.45rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .player ~ .tracks th:nth-child(1),
+  .player ~ .tracks td:nth-child(1) {
+    width: 4.25rem;
+    padding-right: 0.45rem;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .player ~ .tracks th:nth-child(4),
+  .player ~ .tracks td:nth-child(4),
+  .player ~ .tracks th:nth-child(5),
+  .player ~ .tracks td:nth-child(5) {
+    width: 2rem;
+    padding-right: 0;
+  }
+
+  .player-bar {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+
+  .now-playing {
+    flex: 1 1 12rem;
+  }
+}
