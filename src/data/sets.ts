@@ -46,7 +46,16 @@ export function watchUrl(id: string, seconds: number) {
   return `https://www.youtube.com/embed/${id}?start=${seconds}&autoplay=1`;
 }
 
-export function byNewest(a: { id: string }, b: { id: string }) {
-  const year = (id: string) => Number(id.match(/(\d{4})$/)?.[1] ?? 0);
-  return year(b.id) - year(a.id) || a.id.localeCompare(b.id);
+export function byNewest(
+  a: { id: string; data?: { date?: string } },
+  b: { id: string; data?: { date?: string } },
+) {
+  const key = (s: { id: string; data?: { date?: string } }) => {
+    const d = s.data?.date;
+    const m = d?.match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/);
+    if (m) return `${m[1]}${m[2] ?? "00"}${m[3] ?? "00"}`;
+    const year = s.id.match(/(\d{4})$/)?.[1] ?? "0000";
+    return `${year}0000`;
+  };
+  return key(b).localeCompare(key(a)) || a.id.localeCompare(b.id);
 }

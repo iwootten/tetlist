@@ -38,7 +38,7 @@ A `source` URL may include a `t=` playhead (Alexandra Palace does). That offset 
 
 Titles split on the first ` — ` (em dash with spaces). Text before it is the artist. Text after it, including any further em dashes, is the set name. A title with no em dash is shown in full and has no separate artist crumb. A hyphen (` - `) is not a split.
 
-Index order is the four-digit year at the end of the slug, newest first. Sets with the same year are ordered by slug.
+Index order is the set `date` (the video publish date, `YYYY-MM-DD`), newest first. Sets without a date fall back to the four-digit year at the end of the slug.
 
 ## Pages
 
