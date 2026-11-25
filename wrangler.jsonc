@@ -8,10 +8,6 @@
     {
       "pattern": "tetlist.com",
       "custom_domain": true
-    },
-    {
-      "pattern": "www.tetlist.com",
-      "custom_domain": true
     }
   ]
 }
