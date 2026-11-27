@@ -1,7 +1,7 @@
 export const site = {
   documentTitle: "Four Tet sets, tracklists and videos",
   tagline: "Watch Four Tet performances and find the tracks used to make them",
-  description: "Watch Kieran Hebden sets and dig through tracklists",
+  description: "Watch and listen to Four Tet sets, discover source tracks from Bandcamp and Beatport",
 };
 
 export function splitTitle(title: string) {

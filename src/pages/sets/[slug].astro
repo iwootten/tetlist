@@ -21,11 +21,12 @@ const { detail } = splitTitle(set.data.title);
 const artist = set.data.artist;
 const subtitle = detail || set.data.title;
 const video = youtube(set.data.source);
+const description = `Watch and listen to ${set.data.title}, discover source tracks from Bandcamp and Beatport`;
 ---
 
 <Base
   title={`${set.data.title} Tracklist, video and download links`}
-  description={`Watch ${set.data.title} set, find the source tracks and download links`}
+  description={description}
   image={ogImagePath(set.id)}
   imageWidth={1200}
   imageHeight={675}
