@@ -2,7 +2,7 @@
 
 | # | Artist | Track | Bandcamp |
 |---|--------|-------|----------|
-| 01 | ⣎⡇ꉺლ༽இ•̛)ྀ◞ ༎ຶ ༽ৣৢ؞ৢ؞ؖ ꉺლ | TEXT059 Track 8 | [00000ooooo.bandcamp.com/track/--14](https://00000ooooo.bandcamp.com/track/--14) |
+| 01 | ⣎⡇ꉺლ༽இ•̛)ྀ◞ ༎ຶ ༽ৣৢ؞ৢ؞ؖ ꉺლ | ● ࿀ ● ࿀ ● ● ࿀ ● ࿀ ● ● ࿀… | [00000ooooo.bandcamp.com/track/--14](https://00000ooooo.bandcamp.com/track/--14) |
 | 02 | Percussions | ID | |
 | 03 | Galcher Lustwerk | Vestibule (Ricardo Villalobos remix) | [stratasonic.bandcamp.com/album/vestibule-remixes](https://stratasonic.bandcamp.com/album/vestibule-remixes) |
 | 04 | Four Tet | Baby (Tony Romera remix) | [fourtet.bandcamp.com/track/baby-tony-romera-remix](https://fourtet.bandcamp.com/track/baby-tony-romera-remix) |

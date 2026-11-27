@@ -4,10 +4,10 @@ Source: https://www.youtube.com/watch?v=Jt5o-KdPC4A
 
 | # | Time | Artist | Track | Bandcamp |
 |---|------|--------|-------|----------|
-| 01 | 0:00 | ⣎⡇ꉺლ༽இ•̛)ྀ◞ ༎ຶ ༽ৣৢ؞ৢ؞ؖ ꉺლ | TEXT059 Track 8 | [00000ooooo.bandcamp.com/track/--14](https://00000ooooo.bandcamp.com/track/--14) |
+| 01 | 0:00 | ⣎⡇ꉺლ༽இ•̛)ྀ◞ ༎ຶ ༽ৣৢ؞ৢ؞ؖ ꉺლ | ● ࿀ ● ࿀ ● ● ࿀ ● ࿀ ● ● ࿀… | [00000ooooo.bandcamp.com/track/--14](https://00000ooooo.bandcamp.com/track/--14) |
 | 02 | 2:20 | Percussions | ID *(w/ Four Tet – 31 Bloom)* | [fourtet.bandcamp.com/track/31-bloom](https://fourtet.bandcamp.com/track/31-bloom) *(31 Bloom)* |
 | 03 | 9:36 | Four Tet | Baby (Tony Romera Remix) | [fourtet.bandcamp.com/track/baby-tony-romera-remix](https://fourtet.bandcamp.com/track/baby-tony-romera-remix) |
-| 04 | 13:35 | ⣎⡇ꉺლ༽இ•̛)ྀ◞ ༎ຶ ༽ৣৢ؞ৢ؞ؖ ꉺლ | TEXT059 Track 7 | [00000ooooo.bandcamp.com/track/v-v-v-v-v](https://00000ooooo.bandcamp.com/track/v-v-v-v-v) |
+| 04 | 13:35 | ⣎⡇ꉺლ༽இ•̛)ྀ◞ ༎ຶ ༽ৣৢ؞ৢ؞ؖ ꉺლ | Ɵʅ()vȯ)) ☼◞⊖◟ ʅ()ȯ)vȯ))… | [00000ooooo.bandcamp.com/track/v-v-v-v-v](https://00000ooooo.bandcamp.com/track/v-v-v-v-v) |
 | 05 | 18:04 | Champion & Four Tet & Skrillex & Naisha | Talk To Me | [disordermusicgroup.bandcamp.com/track/talk-to-me-ft-naisha](https://disordermusicgroup.bandcamp.com/track/talk-to-me-ft-naisha) |
 | 06 | 21:26 | KH | Maybe | |
 | 07 | 25:55 | KH & Nelly Furtado | Only Human | [fourtet.bandcamp.com/track/only-human](https://fourtet.bandcamp.com/track/only-human) |
