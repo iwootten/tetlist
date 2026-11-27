@@ -2,6 +2,7 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import { displayTime, splitTitle, startSeconds, watchUrl, youtube } from "../../data/sets";
+import { ogImagePath } from "../../lib/og";
 
 export async function getStaticPaths() {
   const sets = await getCollection("sets");
@@ -25,6 +26,9 @@ const video = youtube(set.data.source);
 <Base
   title={`${set.data.title} Tracklist, video and download links`}
   description={`Watch ${set.data.title} set, find the source tracks and download links`}
+  image={ogImagePath(set.id)}
+  imageWidth={1200}
+  imageHeight={675}
 >
   <main>
     <h1 class="nav">

@@ -42,6 +42,10 @@ export function youtube(source?: string) {
   return { id };
 }
 
+export function thumbnailUrl(id: string) {
+  return `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+}
+
 export function watchUrl(id: string, seconds: number) {
   return `https://www.youtube.com/embed/${id}?start=${seconds}&autoplay=1`;
 }

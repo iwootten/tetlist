@@ -128,7 +128,7 @@ The index list, breadcrumb, and `main` column do not change at these breakpoints
 
 ## SEO and sharing
 
-Every page sets a description, `og:title`, `og:description`, `og:url`, and `og:image`. The image is `/og.jpg` at 1200×630. Twitter uses `summary_large_image` with the same title, description, and image.
+Every page sets a description, `og:title`, `og:description`, `og:url`, and `og:image`. Set pages render their own card at `/og/{slug}.jpg`: a 1200×675 JPEG (16:9, so the YouTube thumbnail fills it uncropped) overlaying the set's thumbnail, dimmed by a top-and-bottom scrim, with the title, event and duration (the event is omitted when the title already names it), the track count, and the `tetlist.com` wordmark. Cards are prerendered by `src/pages/og/[slug].jpg.ts` with Satori and sharp, using Instrument Sans at 400/500/600. Any other page uses `/og.jpg` at 1200×630. Twitter uses `summary_large_image` with the same title, description, and image.
 
 `public/robots.txt` allows all crawlers and points at `https://tetlist.com/sitemap-index.xml`. The sitemap integration emits that index plus the page list, covering `/` and each `/sets/{slug}/`.
 
