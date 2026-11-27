@@ -2,7 +2,10 @@
   "name": "tetlist",
   "compatibility_date": "2026-09-25",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    // canonical URLs and the sitemap use the trailing-slash form, so redirect
+    // /sets/<slug> to /sets/<slug>/
+    "html_handling": "force-trailing-slash"
   },
   "routes": [
     {
