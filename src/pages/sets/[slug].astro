@@ -1,7 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
 import Base from "../../layouts/Base.astro";
-import { displayTime, splitTitle, startSeconds, watchUrl, youtube } from "../../data/sets";
+import { displayTime, displayTitle, splitTitle, startSeconds, watchUrl, youtube } from "../../data/sets";
 import { ogImagePath } from "../../lib/og";
 
 export async function getStaticPaths() {
@@ -81,7 +81,11 @@ const description = `Watch and listen to ${set.data.title}, discover source trac
                   )}
                 </td>
                 <td>{track.artist}</td>
-                <td>{track.title}</td>
+                <td>
+                  <span class="clamp" title={track.title}>
+                    {displayTitle(track.title)}
+                  </span>
+                </td>
                 <td>
                   {track.bandcamp && (
                     <a class="buy bandcamp" href={track.bandcamp} target="_blank" rel="noopener">

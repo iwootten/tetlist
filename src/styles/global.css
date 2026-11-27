@@ -178,6 +178,15 @@ a:focus-visible {
   font-size: 0.75rem;
 }
 
+/* Zalgo track names (⣎⡇ꉺლ༽இ… releases) stack glyphs past their line box, so clip
+   them to two lines rather than letting them bleed into neighbouring rows. */
+.tracks .clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .player-bar {
   display: flex;
   align-items: baseline;

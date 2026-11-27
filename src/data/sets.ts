@@ -31,6 +31,21 @@ export function startSeconds(time: string) {
   return parts[0];
 }
 
+// Zalgo-style titles (⣎⡇ꉺლ༽இ…, the 00000ooooo releases) stack hundreds of combining
+// marks on a few base characters. The full name lives in the data; for the table
+// we drop the marks so the text stays one line tall, then crop to `limit`.
+const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+
+export function displayTitle(title: string, limit = 44) {
+  // Only sanitise titles that are actually mark-heavy, so normal diacritics
+  // (Pieśń, Isolée) are left alone.
+  const marks = title.match(/\p{M}/gu)?.length ?? 0;
+  const plain = marks >= 8 ? title.replace(/\p{M}+/gu, "").replace(/\s+/g, " ").trim() : title;
+  const graphemes = [...segmenter.segment(plain)].map((s) => s.segment);
+  if (graphemes.length <= limit) return plain;
+  return `${graphemes.slice(0, limit).join("").trimEnd()}…`;
+}
+
 export function youtube(source?: string) {
   if (!source) return null;
   const url = new URL(source);

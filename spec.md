@@ -114,6 +114,8 @@ The player is 16:9, black until the video paints, and defaults to `min(48rem, ca
 
 Track columns stay proportional: time 12%, artist 34%, title 36%, Bandcamp 9%, Beatport 9%.
 
+Titles come from the release, and the ⣎⡇ꉺლ༽இ releases on 00000ooooo stack hundreds of combining marks on a few base characters. `displayTitle` in `src/data/sets.ts` drops the marks for any title with eight or more of them and crops to 44 graphemes; the full name stays in the data and in the cell's `title` attribute. Cells also clamp to two lines so stacked glyphs cannot bleed into neighbouring rows.
+
 ## Breakpoints
 
 Root font size is the browser default, so `1rem` is 16px.
